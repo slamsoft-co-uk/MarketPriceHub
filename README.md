@@ -13,7 +13,12 @@ The launcher uses `JAVA_HOME` if it is set. Otherwise, it runs `java` from the s
 
 ## Run the Windows distribution
 
-1. Download or clone this repository, including the ZIP distribution.
+1. Download or clone this repository, including the ZIP distribution which is located in the following folder:-
+
+   ```text
+   dist\market-price-hub-1.0-windows.zip
+   ```
+
 2. Choose a permanent folder where the application can run, for example:
 
    ```text
