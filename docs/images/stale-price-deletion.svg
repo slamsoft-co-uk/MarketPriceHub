@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-labelledby="title desc">
+  <title id="title">Scheduled stale-price deletion sequence</title><desc id="desc">The cron scheduler triggers the task, which calculates a cutoff from configured stale age and deletes older prices from the repository.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#334155"/></marker>
+    <marker id="return" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#64748b"/></marker>
+    <style>text{font-family:Arial,sans-serif;fill:#172033}.label{font-size:13px}.head{font-size:13px;font-weight:bold}.reply{stroke:#64748b;stroke-dasharray:6 4}.call{stroke:#334155}.life{stroke:#94a3b8;stroke-dasharray:5 5}</style>
+  </defs>
+  <rect width="960" height="460" rx="10" fill="#fff"/><text x="24" y="32" font-size="21" font-weight="bold">Scheduled stale-price deletion</text>
+  <g fill="#eaf2ff" stroke="#7193c6"><rect x="28" y="54" width="140" height="46" rx="6"/><rect x="218" y="54" width="140" height="46" rx="6"/><rect x="408" y="54" width="140" height="46" rx="6"/><rect x="598" y="54" width="140" height="46" rx="6"/><rect x="788" y="54" width="140" height="46" rx="6"/></g>
+  <g class="head" text-anchor="middle"><text x="98" y="82">Scheduler</text><text x="288" y="82">Scheduled task</text><text x="478" y="82">Configuration</text><text x="668" y="82">Delete service</text><text x="858" y="82">Price repo</text></g>
+  <g class="life"><path d="M98 100V390 M288 100V390 M478 100V390 M668 100V390 M858 100V390"/></g>
+  <g fill="none" class="call" marker-end="url(#arrow)"><path d="M98 145H288"/><path d="M288 195H478"/><path d="M288 275H668"/><path d="M668 320H858"/></g>
+  <g fill="none" class="reply" marker-end="url(#return)"><path d="M478 230H288"/><path d="M858 355H668"/><path d="M668 375H288"/><path d="M288 395H98"/></g>
+  <g class="label" text-anchor="middle"><text x="193" y="138">Cron trigger</text><text x="383" y="188">Read stale age</text><text x="383" y="223">Configured days</text><text x="478" y="268">Calculate cutoff</text><text x="763" y="313">deleteBefore(cutoff)</text><text x="763" y="348">Deleted count</text><text x="478" y="368">Deletion complete</text><text x="193" y="388">Deleted count</text></g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Retrieve prices for an instrument sequence</title><desc id="desc">The controller validates the instrument ID. The service fetches prices and looks up each vendor before returning a sorted response.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#334155"/></marker>
+    <marker id="return" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#64748b"/></marker>
+    <style>text{font-family:Arial,sans-serif;fill:#172033}.label{font-size:13px}.head{font-size:13px;font-weight:bold}.reply{stroke:#64748b;stroke-dasharray:6 4}.call{stroke:#334155}.life{stroke:#94a3b8;stroke-dasharray:5 5}</style>
+  </defs>
+  <rect width="960" height="520" rx="10" fill="#fff"/><text x="24" y="32" font-size="21" font-weight="bold">Retrieve prices for an instrument</text>
+  <g fill="#eaf2ff" stroke="#7193c6"><rect x="35" y="54" width="130" height="46" rx="6"/><rect x="245" y="54" width="130" height="46" rx="6"/><rect x="455" y="54" width="130" height="46" rx="6"/><rect x="665" y="54" width="130" height="46" rx="6"/></g>
+  <g class="head" text-anchor="middle"><text x="100" y="82">Client</text><text x="310" y="82">Controller</text><text x="520" y="82">Service</text><text x="730" y="82">Vendor / Price repos</text></g>
+  <g class="life"><path d="M100 100V465 M310 100V465 M520 100V465 M730 100V465"/></g>
+  <g fill="none" class="call" marker-end="url(#arrow)"><path d="M100 145H310"/><path d="M310 215H520"/><path d="M520 260H730"/><path d="M520 345H730"/></g>
+  <g fill="none" class="reply" marker-end="url(#return)"><path d="M730 300H520"/><path d="M730 385H520"/><path d="M520 415H310"/><path d="M310 445H100"/></g>
+  <g class="label" text-anchor="middle"><text x="205" y="138">GET prices by instrument</text><text x="310" y="178">Validate instrumentId</text><text x="415" y="208">getPrices(instrumentId)</text><text x="625" y="253">findByInstrumentId(...)</text><text x="625" y="293">Prices</text><text x="625" y="338">findById(vendorId), per price</text><text x="625" y="378">Vendor details</text><text x="415" y="408">Join and sort by vendor ID</text><text x="205" y="438">200 OK with prices</text></g>
+  <rect x="35" y="476" width="760" height="28" rx="5" fill="#fff4e5" stroke="#f0bd73"/><text x="48" y="495" font-size="13">Invalid or blank instrumentId returns 400 Bad Request.</text>
+</svg>

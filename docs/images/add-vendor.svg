@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 390" role="img" aria-labelledby="title desc">
+  <title id="title">Add a vendor sequence</title><desc id="desc">The client submits a validated vendor request. The service saves it in the vendor repository and returns success.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#334155"/></marker>
+    <marker id="return" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#64748b"/></marker>
+    <style>text{font-family:Arial,sans-serif;fill:#172033}.label{font-size:14px}.head{font-size:14px;font-weight:bold}.reply{stroke:#64748b;stroke-dasharray:6 4}.call{stroke:#334155}.life{stroke:#94a3b8;stroke-dasharray:5 5}</style>
+  </defs>
+  <rect width="760" height="390" rx="10" fill="#fff"/><text x="24" y="32" font-size="21" font-weight="bold">Add a vendor</text>
+  <g fill="#eaf2ff" stroke="#7193c6"><rect x="45" y="54" width="130" height="46" rx="6"/><rect x="315" y="54" width="130" height="46" rx="6"/><rect x="585" y="54" width="130" height="46" rx="6"/></g>
+  <g class="head" text-anchor="middle"><text x="110" y="82">Client</text><text x="380" y="82">Controller</text><text x="650" y="82">Vendor repo</text></g>
+  <g class="life"><path d="M110 100V330 M380 100V330 M650 100V330"/></g>
+  <g fill="none" class="call" marker-end="url(#arrow)"><path d="M110 145H380"/><path d="M380 205H650"/></g>
+  <g fill="none" class="reply" marker-end="url(#return)"><path d="M650 250H380"/><path d="M380 280H110"/></g>
+  <g class="label" text-anchor="middle"><text x="245" y="138">POST /addVendor</text><text x="380" y="178">Validate request</text><text x="515" y="198">save(Vendor)</text><text x="515" y="243">Saved</text><text x="245" y="273">200 OK</text></g>
+</svg>

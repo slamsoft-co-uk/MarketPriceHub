@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-labelledby="title desc">
+  <title id="title">Publish a price sequence</title>
+  <desc id="desc">The client submits a validated price. The service checks the instrument and vendor, saves the price, and returns success or not found.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#334155"/></marker>
+    <marker id="return" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#64748b"/></marker>
+    <style>text{font-family:Arial,sans-serif;fill:#172033}.label{font-size:14px}.head{font-size:13px;font-weight:bold}.reply{stroke:#64748b;stroke-dasharray:6 4}.call{stroke:#334155}.life{stroke:#94a3b8;stroke-dasharray:5 5}</style>
+  </defs>
+  <rect width="1100" height="650" rx="10" fill="#fff"/>
+  <text x="24" y="32" font-size="21" font-weight="bold">Publish a price</text>
+  <g fill="#eaf2ff" stroke="#7193c6">
+    <rect x="28" y="54" width="114" height="46" rx="6"/><rect x="213" y="54" width="114" height="46" rx="6"/>
+    <rect x="398" y="54" width="114" height="46" rx="6"/><rect x="583" y="54" width="114" height="46" rx="6"/>
+    <rect x="768" y="54" width="114" height="46" rx="6"/><rect x="953" y="54" width="114" height="46" rx="6"/>
+  </g>
+  <g class="head" text-anchor="middle">
+    <text x="85" y="82">Client</text><text x="270" y="82">Controller</text><text x="455" y="82">Service</text>
+    <text x="640" y="82">Instrument repo</text><text x="825" y="82">Vendor repo</text><text x="1010" y="82">Price repo</text>
+  </g>
+  <g class="life">
+    <path d="M85 100V570 M270 100V570 M455 100V570 M640 100V570 M825 100V570 M1010 100V570"/>
+  </g>
+  <g class="call" fill="none" marker-end="url(#arrow)">
+    <path d="M85 145H270"/><path d="M270 190H455"/><path d="M455 235H640"/>
+    <path d="M455 325H825"/><path d="M455 415H1010"/>
+  </g>
+  <g class="reply" fill="none" marker-end="url(#return)">
+    <path d="M640 280H455"/><path d="M825 370H455"/><path d="M1010 460H455"/>
+    <path d="M455 505H270"/><path d="M270 550H85"/>
+  </g>
+  <g class="label" text-anchor="middle">
+    <text x="177" y="138">POST /publishPrices</text><text x="362" y="183">Validate request</text>
+    <text x="547" y="228">publishPrice(...)</text><text x="547" y="273">existsById(instrumentId)</text>
+    <text x="547" y="318">Instrument exists</text><text x="640" y="363">existsById(vendorId)</text>
+    <text x="640" y="408">Vendor exists</text><text x="732" y="453">save(Price)</text>
+    <text x="732" y="498">Saved</text><text x="362" y="543">Success</text><text x="177" y="588">200 OK</text>
+  </g>
+  <rect x="28" y="605" width="1039" height="30" rx="5" fill="#fff4e5" stroke="#f0bd73"/>
+  <text x="42" y="625" font-size="13">If either ID is unknown, the service returns a not-found error and the API responds with 404.</text>
+</svg>
