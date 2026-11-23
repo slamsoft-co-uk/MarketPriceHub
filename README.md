@@ -1,6 +1,6 @@
 # Market Price Hub
 
-Market Price Hub is a Spring Boot REST application for managing instruments, vendors, and their prices. It provides endpoints to add vendors and instruments, publish prices, retrieve prices by vendor or instrument, and find the best price for an instrument.
+Market Price Hub is a Spring Boot REST application for managing instruments, vendors, and their prices. It provides endpoints to add vendors and instruments, publish prices, retrieve prices by vendor or instrument, find the best price for an instrument, and list all current prices across vendors and instruments.
 
 The project includes a Windows ZIP distribution containing the runnable Spring Boot application and a batch launcher. The application uses in-memory repositories; data is lost when the application stops.
 
@@ -10,6 +10,8 @@ The project includes a Windows ZIP distribution containing the runnable Spring B
 - Java 21 or later installed
 
 The launcher uses `JAVA_HOME` if it is set. Otherwise, it runs `java` from the system `PATH`. Maven is not required to run the packaged ZIP.
+
+Note: If the launcher reports that Java cannot be found, install a Java 21-or-later runtime and either set `JAVA_HOME` to its installation directory or add its `bin` directory to `PATH`.
 
 ## Run the Windows distribution
 
@@ -41,7 +43,19 @@ The launcher uses `JAVA_HOME` if it is set. Otherwise, it runs `java` from the s
 
 The Swagger UI lists the available REST endpoints and lets you submit requests to the running application.
 
-If the launcher reports that Java cannot be found, install a Java 21-or-later runtime and either set `JAVA_HOME` to its installation directory or add its `bin` directory to `PATH`.
+
+### Local demo activity
+
+The Windows launcher starts the application with the `local` profile, which loads the sample vendors, instruments, and prices. It also enables a background demo that continuously makes randomized price lookups and publishes updated prices for existing vendor/instrument pairs. The demo runs several worker threads and its activity is reported in the console logs.
+
+To run the application with the `local` profile but without the background demo, remove `-Ddemo.activity.enabled=true` from both Java command lines in `marketpricehub.bat`, or start the JAR directly without that JVM parameter:
+
+```powershell
+java -jar market-price-hub-1.0.jar --spring.profiles.active=local
+```
+
+The sample data will still be loaded when the demo is disabled.
+
 
 ## Build the Windows ZIP from source
 
@@ -64,5 +78,5 @@ Copy and extract that ZIP as described above.
 - [System design and sequence diagrams](docs/System%20Design.md)
 - [Domain model](docs/DomainModel.md)
 - [Project implementation](docs/Project%20Implementation.md)
-- [Development challenges](docs/Development%20Challenges.md)
+- [Development Considerations](docs/Development%20Considerations.md)
 - [Application limitations](docs/Application%20Limitations.md)

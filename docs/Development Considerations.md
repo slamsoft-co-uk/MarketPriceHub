@@ -12,6 +12,7 @@ The price API needs to retrieve quotes in two directions:
 
 - all vendors' prices for a given instrument;
 - all instruments' prices for a given vendor.
+- all current prices across every vendor and instrument.
 
 The current `InMemoryPriceRepository` holds each price in one nested collection keyed first by instrument ID and then by vendor ID:
 
@@ -21,7 +22,9 @@ instrumentId -> (vendorId -> Price)
 
 This makes instrument-based lookups direct and lets the repository replace a vendor's existing quote for an instrument without searching the collection. Vendor-based lookup has no corresponding index, so it scans the instrument collections and checks for that vendor's price in each one. This is a table-scan-like trade-off: it avoids keeping duplicate indexes in memory, but vendor queries become more expensive as the number of instruments grows.
 
-### Synchronization and concurrent access
+The all-prices endpoint also scans the stored quotes, then joins each price to its vendor and instrument to provide descriptive details. This is convenient for testing and small demonstration datasets, but its work and response size grow with the total number of current vendor/instrument pairs.
+
+### Synchronization and Concurrent access
 
 Every method in `InMemoryPriceRepository` is declared `synchronized`. They all acquire the same repository-instance monitor, so only one operation on that instance can run at a time. This protects compound operations such as updating or deleting entries across the nested maps, but also serializes reads and writes that might otherwise proceed concurrently. In particular, a vendor-driven scan or stale-price deletion holds the monitor while traversing prices, preventing other callers from accessing the repository during that work. With many simultaneous users, this can create lock contention, increase response times, and limit throughput; using `ConcurrentHashMap` does not remove the additional method-level lock.
 

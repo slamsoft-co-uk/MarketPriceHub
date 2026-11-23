@@ -12,7 +12,7 @@ The current repositories store data in process memory. They provide a simple imp
 |---|---|---|
 | Web controllers | Map HTTP routes, validate request data, call services, and format responses. | `PublishPricesController`, `AddVendorController` |
 | DTOs | Define the request and response shapes at the API boundary. Request DTOs use Jakarta Bean Validation constraints. | `PublishPricesRequest`, `VendorUpdateRequest` |
-| Services | Coordinate application behaviour, including entity checks, price publication, price lookups, and stale-price cleanup. | `PublishPricesService`, `GetPricesForAllVendorsOfGivenInstrumentService` |
+| Services | Coordinate application behaviour, including entity checks, price publication, price lookups, and stale-price cleanup. | `PublishPricesService`, `GetPricesForAllVendorsOfGivenInstrumentService`, `GetAllPricesService` |
 | Domain model | Represent the business data as immutable Java records. | `Instrument`, `Vendor`, `Price` |
 | Repository interfaces | Define the data operations required by services without specifying how data is stored. | `InstrumentRepository`, `VendorRepository`, `PriceRepository` |
 | Repository implementations | Implement those operations using the current in-memory maps. | `InMemoryInstrumentRepository`, `InMemoryVendorRepository`, `InMemoryPriceRepository` |
@@ -28,7 +28,7 @@ For example, publishing a price follows this path:
 
 ### Repository pattern
 
-Services depend on repository interfaces rather than on the map implementations. The interfaces expose domain operations such as `findByInstrumentId`, `findBestPriceByInstrumentId`, and `deleteBefore`.
+Services depend on repository interfaces rather than on the map implementations. The interfaces expose domain operations such as `findByInstrumentId`, `findAll`, `findBestPriceByInstrumentId`, and `deleteBefore`.
 
 This hides storage details from the application logic and allows a different implementation to be substituted. It also makes services straightforward to test with in-memory repositories or test doubles.
 
@@ -63,9 +63,13 @@ Prices are held in a nested map:
 
 This organisation supports looking up prices for an instrument and replaces the previous price when the same vendor publishes another price for the same instrument. It therefore represents the latest stored price for each vendor/instrument pair, not a history of price observations.
 
+`GET /marketpricehub/getAllPrices` uses `PriceRepository.findAll()` to retrieve the current quotes and joins each quote with its vendor and instrument records for the response. The controller orders the result by vendor ID and then instrument ID.
+
 The maps are held only in the running process. Restarting the application clears the data, and separate instances do not share it. The price repository synchronizes its operations in addition to using concurrent maps; this protects its compound updates within one process, but does not provide coordination between application instances.
 
 In the `local` profile, `DataSeeder` loads sample vendors, instruments, and prices from `/demo-data.csv` at application startup. This supplies demonstration data without making the sample loader part of the API request path.
+
+`DemoActivityRunner` runs by default when started with the provided Windows launcher, which sets the JVM system property `-Ddemo.activity.enabled=true` for the `local` profile. After seeding, it starts four background workers that continuously perform randomized vendor and instrument price lookups and publish updated prices for seeded vendor/instrument pairs, pausing between operations. To disable the workload, remove that JVM property from the launcher command; the `local` profile will still load the sample data. The workers are interrupted when the application shuts down.
 
 ## Replacing the maps with a database
 

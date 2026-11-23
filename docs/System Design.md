@@ -32,7 +32,7 @@ The best-price operation returns the lowest numeric price among the stored quote
 
 ### Deterministic read responses
 
-The two list endpoints sort their results by instrument or vendor ID before returning them. This avoids relying on map iteration order, producing stable responses that are easier for API clients to consume and for tests to verify.
+The price-list endpoints sort their results by instrument or vendor ID before returning them. The all-prices endpoint sorts by vendor ID and then instrument ID. This avoids relying on map iteration order, producing stable responses that are easier for API clients to consume and for tests to verify.
 
 ### Configurable stale-price cleanup
 
@@ -40,7 +40,7 @@ Staleness is based on each quote's `priceDate`; the scheduled task computes a cu
 
 ### Profile-specific demo data
 
-Demo data is loaded from a CSV only under the `local` profile, keeping sample records out of other profiles. Requiring an explicit active profile also prevents the application from starting with an accidental or ambiguous configuration.
+Demo data is loaded from a CSV only under the `local` profile, keeping sample records out of other profiles. The concurrent demo workload is also restricted to `local` and runs by default when using the provided Windows launcher, which sets the `-Ddemo.activity.enabled=true` JVM system property. Removing that property disables the workload while leaving data seeding enabled. Requiring an explicit active profile also prevents the application from starting with an accidental or ambiguous configuration.
 
 ## Publish a price
 
@@ -248,6 +248,41 @@ sequenceDiagram
 
 </details>
 
+## Retrieve all prices
+
+`GET /marketpricehub/getAllPrices`
+
+Returns every currently stored price, including its vendor and instrument IDs and descriptions, price, and price date. Results are ordered by vendor ID and then instrument ID. This endpoint is useful for inspecting the complete current in-memory price set, for example during testing.
+
+<details>
+<summary>Mermaid source</summary>
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant Controller as GetAllPricesController
+    participant Service as GetAllPricesService
+    participant Prices as PriceRepository
+    participant Vendors as VendorRepository
+    participant Instruments as InstrumentRepository
+
+    Client->>Controller: GET /getAllPrices
+    Controller->>Service: getAllPrices()
+    Service->>Prices: findAll()
+    Prices-->>Service: prices
+    loop Each price
+        Service->>Vendors: findById(vendorId)
+        Vendors-->>Service: vendor
+        Service->>Instruments: findById(instrumentId)
+        Instruments-->>Service: instrument
+    end
+    Service-->>Controller: all prices with vendor and instrument details
+    Controller->>Controller: Sort by vendor ID, then instrument ID
+    Controller-->>Client: 200 OK with prices
+```
+
+</details>
+
 ## Scheduled stale-price deletion
 
 Stale prices are removed by a scheduled task. The schedule and stale period are configured in `application.properties`.
@@ -278,9 +313,9 @@ sequenceDiagram
 
 </details>
 
-## Local profile startup and demo-data loading
+## Local profile startup and demo activity
 
-The demo data is loaded only when the application runs with the `local` profile.
+The demo data is loaded only when the application runs with the `local` profile. The concurrent demo activity starts after loading when the `demo.activity.enabled` JVM system property is `true`; the provided Windows launcher enables it.
 
 ![Sequence diagram: local profile startup and demo-data loading](images/local-data-seeding.svg)
 
@@ -294,6 +329,7 @@ sequenceDiagram
     participant Vendors as VendorRepository
     participant Instruments as InstrumentRepository
     participant Prices as PriceRepository
+    participant Demo as DemoActivityRunner
 
     Spring->>Spring: Require active profile
 
@@ -310,6 +346,12 @@ sequenceDiagram
             end
         end
         Seeder-->>Spring: demo data loaded
+        alt demo.activity.enabled=true
+            Spring->>Demo: run(ApplicationArguments)
+            Demo->>Demo: Start concurrent demo workers
+        else demo activity disabled
+            Spring->>Spring: Continue without demo workers
+        end
     else No active profile
         Spring-->>Spring: Reject startup
     end

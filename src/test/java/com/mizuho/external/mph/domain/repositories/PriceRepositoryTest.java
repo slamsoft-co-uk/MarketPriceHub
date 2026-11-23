@@ -34,6 +34,7 @@ class PriceRepositoryTest {
                 .sorted(Comparator.comparing(Price::instrumentId)).toList());
         assertEquals(List.of(first, third), repository.findByInstrumentId("I001").stream()
                 .sorted(Comparator.comparing(Price::vendorId)).toList());
+        assertEquals(3, repository.countAll());
     }
 
     @Test
@@ -47,6 +48,7 @@ class PriceRepositoryTest {
         assertEquals(updated, repository.findByVendorAndInstrument("V001", "I001").orElseThrow());
         assertEquals(List.of(updated), repository.findByVendorId("V001"));
         assertEquals(List.of(updated), repository.findByInstrumentId("I001"));
+        assertEquals(1, repository.countAll());
     }
 
     @Test
@@ -68,10 +70,12 @@ class PriceRepositoryTest {
         assertFalse(repository.findByVendorAndInstrument("V001", "I001").isPresent());
         assertEquals(List.of(price("V001", "I002", "20.50")), repository.findByVendorId("V001"));
         assertEquals(List.of(price("V002", "I001", "9.75")), repository.findByInstrumentId("I001"));
+        assertEquals(2, repository.countAll());
 
         repository.delete("V001", "I002");
         assertTrue(repository.findByVendorId("V001").isEmpty());
         assertTrue(repository.findByInstrumentId("I002").isEmpty());
+        assertEquals(1, repository.countAll());
     }
 
     @Test

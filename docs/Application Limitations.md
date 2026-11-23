@@ -4,6 +4,10 @@ This document records implementation limitations identified during development a
 
 ## Problems encountered and remaining limitations
 
+### User Security is not implemented
+
+The application currently has no user security in place: endpoints are accessible without authenticating a user, and the application does not enforce permissions by role. Ideally, all users would need to authenticate before accessing the system. Authorization should distinguish at least two roles: a read-only role for obtaining prices, and a read/write role for adding vendors and instruments and publishing prices. Authentication and role-based authorization remain future work.
+
 ### In-memory data is not durable
 
 `Instrument`, `Vendor`, and `Price` records are stored in in-memory maps. This is suitable for the current self-contained demonstration but does not retain data after a restart or share data between application instances.

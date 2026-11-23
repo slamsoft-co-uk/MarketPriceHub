@@ -72,4 +72,4 @@ The in-memory implementations use `ConcurrentHashMap`. Price repository operatio
 
 - **Best price:** the price repository selects the lowest numeric `BigDecimal` for an instrument. The model has no currency or unit field, so the values being compared must already be comparable.
 - **Stale-price cleanup:** a price is eligible for deletion when `priceDate` is strictly before the configured cutoff. A price exactly at the cutoff is retained.
-- **Read responses:** services join prices with their vendor or instrument records by ID. The list endpoints sort their output by the related ID so response order does not depend on map iteration.
+- **Read responses:** services join prices with their vendor or instrument records by ID. The list endpoints sort their output by the related ID; the all-prices endpoint sorts by vendor ID and then instrument ID. Response order therefore does not depend on map iteration.

@@ -20,5 +20,9 @@ public interface PriceRepository {
 
     List<Price> findByInstrumentId(String instrumentId);
 
+    List<Price> findAll();
+
+    long countAll();
+
     Optional<Price> findBestPriceByInstrumentId(String instrumentId);
 }

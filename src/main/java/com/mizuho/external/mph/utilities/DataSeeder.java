@@ -9,6 +9,7 @@ import com.mizuho.external.mph.domain.repositories.VendorRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 @Component
 @Profile("local")
+@Order(1)
 public class DataSeeder implements ApplicationRunner {
 
     private final InstrumentRepository instrumentRepository;

@@ -64,6 +64,20 @@ public class InMemoryPriceRepository implements PriceRepository {
     }
 
     @Override
+    public synchronized List<Price> findAll() {
+        return pricesByInstrument.values().stream()
+                .flatMap(prices -> prices.values().stream())
+                .toList();
+    }
+
+    @Override
+    public synchronized long countAll() {
+        return pricesByInstrument.values().stream()
+                .mapToLong(Map::size)
+                .sum();
+    }
+
+    @Override
     public synchronized Optional<Price> findBestPriceByInstrumentId(String instrumentId) {
         return findByInstrumentId(instrumentId).stream()
                 .min(Comparator.comparing(Price::price));
