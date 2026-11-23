@@ -89,5 +89,5 @@ Repository interfaces provide an abstraction boundary, but changing storage is n
 
 ## Related documentation
 
-- [System design and sequence diagrams](System Design.md)
+- [System design and sequence diagrams](SystemDesign.md)
 - [Domain model](DomainModel.md)

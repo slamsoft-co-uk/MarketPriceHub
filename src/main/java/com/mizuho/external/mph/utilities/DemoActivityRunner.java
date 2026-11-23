@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +39,7 @@ public class DemoActivityRunner implements ApplicationRunner {
     private final GetPricesForAllInstrumentsOfGivenVendorService pricesByVendorService;
     private final GetPricesForAllVendorsOfGivenInstrumentService pricesByInstrumentService;
     private final PublishPricesService publishPricesService;
-    private final ExecutorService executor = Executors.newFixedThreadPool(WORKER_COUNT);
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(WORKER_COUNT);
 
     public DemoActivityRunner(
             PriceRepository priceRepository,
@@ -71,39 +71,38 @@ public class DemoActivityRunner implements ApplicationRunner {
         logger.info("Starting local demo activity with {} workers", WORKER_COUNT);
         for (int worker = 1; worker <= WORKER_COUNT; worker++) {
             int workerId = worker;
-            executor.submit(() -> runWorker(workerId, vendorIds, instrumentIds, existingPrices));
+            long pauseMillis = ThreadLocalRandom.current()
+                    .nextLong(MIN_PAUSE_MILLIS, MAX_PAUSE_MILLIS);
+            executor.scheduleWithFixedDelay(
+                    () -> runOperation(workerId, vendorIds, instrumentIds, existingPrices),
+                    0,
+                    pauseMillis,
+                    TimeUnit.MILLISECONDS);
         }
     }
 
-    private void runWorker(
+    private void runOperation(
             int workerId, List<String> vendorIds, List<String> instrumentIds, List<Price> existingPrices) {
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
-                int operation = ThreadLocalRandom.current().nextInt(3);
-                if (operation == 0) {
-                    String vendorId = choose(vendorIds);
-                    pricesByVendorService.getPrices(vendorId);
-                    logger.info("Demo worker {} retrieved prices for vendor {}", workerId, vendorId);
-                } else if (operation == 1) {
-                    String instrumentId = choose(instrumentIds);
-                    pricesByInstrumentService.getPrices(instrumentId);
-                    logger.info("Demo worker {} retrieved prices for instrument {}", workerId, instrumentId);
-                } else {
-                    Price baseline = choose(existingPrices);
-                    BigDecimal price = randomizePrice(baseline.price());
-                    publishPricesService.publishPrice(
-                            baseline.vendorId(), baseline.instrumentId(), price, LocalDateTime.now());
-                    logger.info("Demo worker {} published price {} for vendor {} and instrument {}",
-                            workerId, price, baseline.vendorId(), baseline.instrumentId());
-                }
-            } catch (RuntimeException exception) {
-                logger.error("Demo worker {} failed to perform an operation", workerId, exception);
+        try {
+            int operation = ThreadLocalRandom.current().nextInt(3);
+            if (operation == 0) {
+                String vendorId = choose(vendorIds);
+                pricesByVendorService.getPrices(vendorId);
+                logger.info("Demo worker {} retrieved prices for vendor {}", workerId, vendorId);
+            } else if (operation == 1) {
+                String instrumentId = choose(instrumentIds);
+                pricesByInstrumentService.getPrices(instrumentId);
+                logger.info("Demo worker {} retrieved prices for instrument {}", workerId, instrumentId);
+            } else {
+                Price baseline = choose(existingPrices);
+                BigDecimal price = randomizePrice(baseline.price());
+                publishPricesService.publishPrice(
+                        baseline.vendorId(), baseline.instrumentId(), price, LocalDateTime.now());
+                logger.info("Demo worker {} published price {} for vendor {} and instrument {}",
+                        workerId, price, baseline.vendorId(), baseline.instrumentId());
             }
-            try {
-                Thread.sleep(ThreadLocalRandom.current().nextLong(MIN_PAUSE_MILLIS, MAX_PAUSE_MILLIS));
-            } catch (InterruptedException exception) {
-                Thread.currentThread().interrupt();
-            }
+        } catch (RuntimeException exception) {
+            logger.error("Demo worker {} failed to perform an operation", workerId, exception);
         }
     }
 

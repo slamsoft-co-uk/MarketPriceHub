@@ -75,8 +75,8 @@ Copy and extract that ZIP as described above.
 
 ## Documentation
 
-- [System design and sequence diagrams](docs/System%20Design.md)
+- [System design and sequence diagrams](docs/SystemDesign.md)
 - [Domain model](docs/DomainModel.md)
-- [Project implementation](docs/Project%20Implementation.md)
-- [Development Considerations](docs/Development%20Considerations.md)
-- [Application limitations](docs/Application%20Limitations.md)
+- [Project implementation](docs/ProjectImplementation.md)
+- [Development Considerations](docs/DevelopmentConsiderations.md)
+- [Application limitations](docs/ApplicationLimitations.md)
