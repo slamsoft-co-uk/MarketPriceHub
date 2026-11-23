@@ -252,6 +252,8 @@ sequenceDiagram
 
 `GET /marketpricehub/getAllPrices`
 
+![Sequence diagram: retrieve all prices](images/all-prices.svg)
+
 Returns every currently stored price, including its vendor and instrument IDs and descriptions, price, and price date. Results are ordered by vendor ID and then instrument ID. This endpoint is useful for inspecting the complete current in-memory price set, for example during testing.
 
 <details>

@@ -4,6 +4,16 @@ This document records implementation limitations identified during development a
 
 ## Problems encountered and remaining limitations
 
+### Price delivery is pull-based
+
+The application provides a REST API for users to add vendors and instruments, publish prices, and retrieve current prices. This interface is therefore a pull-based service: users must make a request to receive data, and the application does not automatically notify existing subscribers when a price changes.
+
+A publish/subscribe service would allow users to register interest in a vendor, instrument, or vendor/instrument combination and receive price changes as soon as they are published. This would be beneficial for consumers that need timely updates without repeatedly polling the REST endpoints.
+
+The code would require a moderate change rather than a complete redesign. `PublishPricesService` already validates and saves each new `Price`, so a price-change event could be published immediately after a successful repository save. Because the application is currently in-memory and runs as a single process, Spring events or Server-Sent Events could provide a demonstration subscription mechanism. A broker-backed implementation would be needed for subscriptions across application instances, reconnect and replay support, delivery acknowledgements, and durable event history.
+
+The subscription interface would also need to define matching and access rules, add a managed subscription lifecycle, and handle disconnected clients. In addition to the price-change event, the implementation would need integration tests for publication, subscription filtering, reconnect behaviour, and delivery when more than one application instance or repository implementation is used.
+
 ### User Security is not implemented
 
 The application currently has no user security in place: endpoints are accessible without authenticating a user, and the application does not enforce permissions by role. Ideally, all users would need to authenticate before accessing the system. Authorization should distinguish at least two roles: a read-only role for obtaining prices, and a read/write role for adding vendors and instruments and publishing prices. Authentication and role-based authorization remain future work.
